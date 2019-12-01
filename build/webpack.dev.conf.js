@@ -17,6 +17,14 @@ var app = express()
 var apiRoutes = express.Router()
 app.use('/api',apiRoutes)
 
+//https://blog.csdn.net/muzidigbig/article/details/87376612
+let bodyParser = require('body-parser');
+// 配置中间件
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json
+app.use(bodyParser.json())
+ 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
@@ -59,6 +67,20 @@ const devWebpackConfig = merge(baseWebpackConfig, {
             host: 'c.y.qq.com'
           },
           params: req.query
+        }).then((response) => {
+          res.json(response.data)
+        }).catch((e) => {
+          console.log(e)
+        })
+      }),
+      app.post('/api/getPurlUrl', bodyParser.json(), function (req, res) {
+        const url = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
+        axios.post(url, req.body, {
+          headers: {
+            referer: 'https://y.qq.com/',
+            origin: 'https://y.qq.com',
+            'Content-type': 'application/x-www-form-urlencoded'
+          }
         }).then((response) => {
           res.json(response.data)
         }).catch((e) => {
